@@ -1327,7 +1327,7 @@ extension JSON {
                 dateFmt.dateFormat = "yyyy-MM-dd'T'HH:mm:ss"
                 result = dateFmt.date(from: dateStr);
                 if result == nil{
-                    dateFmt.dateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSSSSS'Z'"
+                    dateFmt.dateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSSXXX"
                     result = dateFmt.date(from: dateStr);
                 }
             }
