@@ -1326,6 +1326,10 @@ extension JSON {
             if result == nil{ // fallback
                 dateFmt.dateFormat = "yyyy-MM-dd'T'HH:mm:ss"
                 result = dateFmt.date(from: dateStr);
+                if result == nil{
+                    dateFmt.dateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSSSSS'Z'"
+                    result = dateFmt.date(from: dateStr);
+                }
             }
         }
         return result;
