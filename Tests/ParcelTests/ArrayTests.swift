@@ -1,6 +1,6 @@
-//  SwiftyJSON.h
+//  ArrayTests.swift
 //
-//  Copyright (c) 2014 - 2016 Pinglin Tang
+//  Copyright (c) 2014 - 2017 Pinglin Tang
 //
 //  Permission is hereby granted, free of charge, to any person obtaining a copy
 //  of this software and associated documentation files (the "Software"), to deal
@@ -20,32 +20,26 @@
 //  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 //  THE SOFTWARE.
 
-import UIKit
-import SwiftyJSON
+import XCTest
+import Parcel
 
-@UIApplicationMain
-class AppDelegate: UIResponder, UIApplicationDelegate {
+class ArrayTests: XCTestCase {
 
-    var window: UIWindow?
-
-    func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
-        
-        let navigationController = self.window?.rootViewController as! UINavigationController
-        let viewController = navigationController.topViewController as! ViewController
-        
-        if let file = Parcel.main.path(forResource: "SwiftyJSONTests", ofType: "json") {
-            do {
-                let data = try Data(contentsOf: URL(fileURLWithPath: file))
-                let json = Parcel(data: data)
-                viewController.json = json
-            } catch {
-                viewController.json = Parcel.null
-            }
-        } else {
-            viewController.json = Parcel.null
-        }
-        
-        return true
+    func testSingleDimensionalArraysGetter() {
+        let array = ["1","2", "a", "B", "D"]
+        let json = Parcel(array)
+        XCTAssertEqual((json.array![0] as Parcel).string!, "1")
+        XCTAssertEqual((json.array![1] as Parcel).string!, "2")
+        XCTAssertEqual((json.array![2] as Parcel).string!, "a")
+        XCTAssertEqual((json.array![3] as Parcel).string!, "B")
+        XCTAssertEqual((json.array![4] as Parcel).string!, "D")
+    }
+    
+    func testSingleDimensionalArraysSetter() {
+        let array = ["1","2", "a", "B", "D"]
+        var json = Parcel(array)
+        json.arrayObject = ["111", "222"]
+        XCTAssertEqual((json.array![0] as Parcel).string!, "111")
+        XCTAssertEqual((json.array![1] as Parcel).string!, "222")
     }
 }
-
