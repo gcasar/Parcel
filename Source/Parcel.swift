@@ -33,6 +33,7 @@ public let ErrorIndexOutOfBounds: Int = 900
 public let ErrorWrongType: Int = 901
 public let ErrorNotExist: Int = 500
 public let ErrorInvalidJSON: Int = 490
+public let ErrorSerializeNotImplemented: Int = 480
 
 public class RequiredFieldException: Error{
     let key:String?;
@@ -52,6 +53,13 @@ public class WrongTypeException: Error{
         self.expected = expectedType;
         self.actual = actualType;
         self.key = forKey;
+    }
+}
+
+public class ParseException: Error{
+    let error:Error?;
+    init(_ underlying:Error?){
+        self.error = underlying;
     }
 }
 
@@ -77,14 +85,6 @@ public enum Type :Int{
     case date
 
     case unknown
-
-}
-
-public protocol ParcelWrittable{
-
-}
-
-public protocol ParcelReadable{
 
 }
 
@@ -856,10 +856,8 @@ extension Parcel {
             switch(e.code){
             case ErrorWrongType:
                 throw WrongTypeException(forKey: _key, expectedType: .array, actualType: self.type);
-                break;
             default://case ErrorNotExist:
                 throw RequiredFieldException(forKey: _key);
-                break;
             }
 
         }else{
@@ -917,10 +915,8 @@ extension Parcel {
             switch(e.code){
             case ErrorWrongType:
                 throw WrongTypeException(forKey: _key, expectedType: .dictionary, actualType: self.type);
-                break;
             default://case ErrorNotExist:
                 throw RequiredFieldException(forKey: _key);
-                break;
             }
 
         }else{
@@ -980,10 +976,8 @@ extension Parcel { // : Swift.Bool
             switch(e.code){
             case ErrorWrongType:
                 throw WrongTypeException(forKey: _key, expectedType: .bool, actualType: self.type);
-                break;
             default://case ErrorNotExist:
                 throw RequiredFieldException(forKey: _key);
-                break;
             }
 
         }else{
@@ -1039,14 +1033,11 @@ extension Parcel {
             return s;
         }else if let e:NSError = self._error{
             switch(e.code){
-            case ErrorNotExist:
-                throw RequiredFieldException(forKey: _key);
-                break;
             case ErrorWrongType:
                 throw WrongTypeException(forKey: _key, expectedType: .string, actualType: self.type);
-                break;
+            default://case ErrorNotExist:
+                throw RequiredFieldException(forKey: _key);
             }
-
         }else{
             throw WrongTypeException(forKey: _key, expectedType: .string, actualType: self.type );
         }
@@ -1103,10 +1094,8 @@ extension Parcel {
             switch(e.code){
             case ErrorWrongType:
                 throw WrongTypeException(forKey: _key, expectedType: .number, actualType: self.type);
-                break;
             default://case ErrorNotExist:
                 throw RequiredFieldException(forKey: _key);
-                break;
             }
 
         }else{
@@ -1703,6 +1692,49 @@ extension Parcel {
             throw WrongTypeException(forKey: _key, expectedType: .date, actualType: self.type );
         }
     }
+}
+
+//MARK: - Parcelable protocol and extensions
+protocol Parcelable{
+    /// throws parse exception
+    init(fromParcel:Parcel) throws;
+
+    func serialize()->Parcel;
+}
+
+extension Parcelable{
+    func serialize()->Parcel{
+        var p = Parcel.null
+        p._error = NSError(domain: ErrorDomain, code: ErrorSerializeNotImplemented, userInfo: nil)
+        return p;
+    }
+}
+
+extension Parcel{
+    func genericObject<T:Parcelable>() -> T?{
+        return try? T(fromParcel: self)
+    }
+
+    func requiredObject<T:Parcelable>() throws ->T{
+        return try T(fromParcel: self);
+    }
+
+    ///Returns an array of objects if self is an array, skips any non-T elements
+    func objectArray<T:Parcelable>() -> [T]?{
+        if let array = self.array{
+            var result:[T] = [];
+            for parcel in array{
+                if let obj = try? T(fromParcel: parcel){
+                    result.append(obj);
+                }
+            }
+            return result;
+        }else{
+            return nil;
+        }
+    }
+
+
 }
 
 public enum writingOptionsKeys {
