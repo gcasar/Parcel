@@ -10,7 +10,7 @@ import XCTest
 import SwiftyJSON
 
 class NestedJSONTests: XCTestCase {
-    let family: JSON = [
+    let family: Bundle = [
         "names" : [
             "Brooke Abigail Matos",
             "Rowan Danger Matos"
@@ -19,14 +19,14 @@ class NestedJSONTests: XCTestCase {
     ]
     
     func testTopLevelNestedJSON() {
-        let nestedJSON: JSON = [
+        let nestedJSON: Bundle = [
             "family" : family
         ]
         XCTAssertNotNil(try? nestedJSON.rawData())
     }
     
     func testDeeplyNestedJSON() {
-        let nestedFamily: JSON = [
+        let nestedFamily: Bundle = [
             "count": 1,
             "families": [
                 [

@@ -1,6 +1,6 @@
 //  PerformanceTests.swift
 //
-//  Copyright (c) 2014 - 2016 Pinglin Tang
+//  Copyright (c) 2014 - 2017 Pinglin Tang
 //
 //  Permission is hereby granted, free of charge, to any person obtaining a copy
 //  of this software and associated documentation files (the "Software"), to deal
@@ -46,7 +46,7 @@ class PerformanceTests: XCTestCase {
         self.measure() {
             for _ in 1...100 {
                 let json = JSON(data:self.testData)
-                XCTAssertTrue(json != JSON.null)
+                XCTAssertTrue(json != Bundle.null)
             }
         }
     }
@@ -100,14 +100,14 @@ class PerformanceTests: XCTestCase {
     }
 
     func testLargeDictionaryMethodPerformance() {
-        var data: [String: JSON] = [:]
+        var data: [String: Bundle] = [:]
         (0...100000).forEach { n in
             data["\(n)"] = JSON([
                 "name": "item\(n)",
                 "id": n
                 ])
         }
-        let json = JSON(data)
+        let json = Bundle(data)
         
         self.measure() {
             autoreleasepool{

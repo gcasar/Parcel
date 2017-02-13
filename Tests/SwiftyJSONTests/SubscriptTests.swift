@@ -1,6 +1,6 @@
 //  SubscriptTests.swift
 //
-//  Copyright (c) 2014 - 2016 Pinglin Tang
+//  Copyright (c) 2014 - 2017 Pinglin Tang
 //
 //  Permission is hereby granted, free of charge, to any person obtaining a copy
 //  of this software and associated documentation files (the "Software"), to deal
@@ -26,7 +26,7 @@ import SwiftyJSON
 class SubscriptTests: XCTestCase {
 
     func testArrayAllNumber() {
-        var json:JSON = [1,2.0,3.3,123456789,987654321.123456789]
+        var json: Bundle = [1, 2.0, 3.3, 123456789, 987654321.123456789]
         XCTAssertTrue(json == [1,2.0,3.3,123456789,987654321.123456789])
         XCTAssertTrue(json[0] == 1)
         XCTAssertEqual(json[1].double!, 2.0)
@@ -48,7 +48,7 @@ class SubscriptTests: XCTestCase {
     }
     
     func testArrayAllBool() {
-        var json:JSON = [true, false, false, true, true]
+        var json: Bundle = [true, false, false, true, true]
         XCTAssertTrue(json == [true, false, false, true, true])
         XCTAssertTrue(json[0] == true)
         XCTAssertTrue(json[1] == false)
@@ -63,7 +63,7 @@ class SubscriptTests: XCTestCase {
     }
     
     func testArrayAllString() {
-        var json:JSON = JSON(rawValue: ["aoo","bpp","zoo"] as NSArray)!
+        var json: Bundle = Bundle(rawValue: ["aoo", "bpp", "zoo"] as NSArray)!
         XCTAssertTrue(json == ["aoo","bpp","zoo"])
         XCTAssertTrue(json[0] == "aoo")
         XCTAssertTrue(json[1] == "bpp")
@@ -76,7 +76,7 @@ class SubscriptTests: XCTestCase {
     }
     
     func testArrayWithNull() {
-        var json:JSON = JSON(rawValue: ["aoo","bpp", NSNull() ,"zoo"] as NSArray)!
+        var json: Bundle = Bundle(rawValue: ["aoo", "bpp", NSNull() , "zoo"] as NSArray)!
         XCTAssertTrue(json[0] == "aoo")
         XCTAssertTrue(json[1] == "bpp")
         XCTAssertNil(json[2].string)
@@ -84,7 +84,7 @@ class SubscriptTests: XCTestCase {
         XCTAssertTrue(json[3] == "zoo")
         
         json[2] = "update"
-        json[3] = JSON(NSNull())
+        json[3] = Bundle(NSNull())
         XCTAssertTrue(json[0] == "aoo")
         XCTAssertTrue(json[1] == "bpp")
         XCTAssertTrue(json[2] == "update")
@@ -93,22 +93,22 @@ class SubscriptTests: XCTestCase {
     }
     
     func testArrayAllDictionary() {
-        var json:JSON = [["1":1, "2":2], ["a":"A", "b":"B"], ["null":NSNull()]]
+        var json: Bundle = [["1":1, "2":2], ["a":"A", "b":"B"], ["null":NSNull()]]
         XCTAssertTrue(json[0] == ["1":1, "2":2])
         XCTAssertEqual(json[1].dictionary!, ["a":"A", "b":"B"])
-        XCTAssertEqual(json[2], JSON(["null":NSNull()]))
+        XCTAssertEqual(json[2], Bundle(["null":NSNull()]))
         XCTAssertTrue(json[0]["1"] == 1)
         XCTAssertTrue(json[0]["2"] == 2)
-        XCTAssertEqual(json[1]["a"], JSON(rawValue: "A")!)
-        XCTAssertEqual(json[1]["b"], JSON("B"))
+        XCTAssertEqual(json[1]["a"], Bundle(rawValue: "A")!)
+        XCTAssertEqual(json[1]["b"], Bundle("B"))
         XCTAssertNotNil(json[2]["null"].null)
         XCTAssertNotNil(json[2,"null"].null)
         let keys:[JSONSubscriptType] = [1, "a"]
-        XCTAssertEqual(json[keys], JSON(rawValue: "A")!)
+        XCTAssertEqual(json[keys], Bundle(rawValue: "A")!)
     }
     
     func testDictionaryAllNumber() {
-        var json:JSON = ["double":1.11111, "int":987654321]
+        var json: Bundle = ["double":1.11111, "int":987654321]
         XCTAssertEqual(json["double"].double!, 1.11111)
         XCTAssertTrue(json["int"] == 987654321)
         
@@ -121,7 +121,7 @@ class SubscriptTests: XCTestCase {
     }
     
     func testDictionaryAllBool() {
-        var json:JSON = ["t":true, "f":false, "false":false, "tr":true, "true":true]
+        var json: Bundle = ["t":true, "f":false, "false":false, "tr":true, "true":true]
         XCTAssertTrue(json["t"] == true)
         XCTAssertTrue(json["f"] == false)
         XCTAssertTrue(json["false"] == false)
@@ -131,13 +131,13 @@ class SubscriptTests: XCTestCase {
         json["f"] = true
         json["tr"] = false
         XCTAssertTrue(json["f"] == true)
-        XCTAssertTrue(json["tr"] == JSON(false))
+        XCTAssertTrue(json["tr"] == Bundle(false))
     }
     
     func testDictionaryAllString() {
-        var json:JSON = JSON(rawValue: ["a":"aoo","bb":"bpp","z":"zoo"] as NSDictionary)!
+        var json: Bundle = Bundle(rawValue: ["a":"aoo", "bb":"bpp", "z":"zoo"] as NSDictionary)!
         XCTAssertTrue(json["a"] == "aoo")
-        XCTAssertEqual(json["bb"], JSON("bpp"))
+        XCTAssertEqual(json["bb"], Bundle("bpp"))
         XCTAssertTrue(json["z"] == "zoo")
         
         json["bb"] = "update"
@@ -147,10 +147,10 @@ class SubscriptTests: XCTestCase {
     }
     
     func testDictionaryWithNull() {
-        var json:JSON = JSON(rawValue: ["a":"aoo","bb":"bpp","null":NSNull(), "z":"zoo"] as NSDictionary)!
+        var json: Bundle = Bundle(rawValue: ["a":"aoo", "bb":"bpp", "null":NSNull(), "z":"zoo"] as NSDictionary)!
         XCTAssertTrue(json["a"] == "aoo")
-        XCTAssertEqual(json["bb"], JSON("bpp"))
-        XCTAssertEqual(json["null"], JSON(NSNull()))
+        XCTAssertEqual(json["bb"], Bundle("bpp"))
+        XCTAssertEqual(json["null"], Bundle(NSNull()))
         XCTAssertTrue(json["z"] == "zoo")
         
         json["null"] = "update"
@@ -161,7 +161,7 @@ class SubscriptTests: XCTestCase {
     
     func testDictionaryAllArray() {
         //Swift bug: [1, 2.01,3.09] is convert to [1, 2, 3] (Array<Int>)
-        let json:JSON = JSON ([[NSNumber(value:1),NSNumber(value:2.123456),NSNumber(value:123456789)], ["aa","bbb","cccc"], [true, "766", NSNull(), 655231.9823]] as NSArray)
+        let json: Bundle = Bundle([[NSNumber(value:1), NSNumber(value:2.123456), NSNumber(value:123456789)], ["aa", "bbb", "cccc"], [true, "766", NSNull(), 655231.9823]] as NSArray)
         XCTAssertTrue(json[0] == [1,2.123456,123456789])
         XCTAssertEqual(json[0][1].double!, 2.123456)
         XCTAssertTrue(json[0][2] == 123456789)
@@ -170,30 +170,30 @@ class SubscriptTests: XCTestCase {
         XCTAssertTrue(json[2][0] == true)
         XCTAssertTrue(json[2][1] == "766")
         XCTAssertTrue(json[[2,1]] == "766")
-        XCTAssertEqual(json[2][2], JSON(NSNull()))
-        XCTAssertEqual(json[2,2], JSON(NSNull()))
-        XCTAssertEqual(json[2][3], JSON(655231.9823))
-        XCTAssertEqual(json[2,3], JSON(655231.9823))
-        XCTAssertEqual(json[[2,3]], JSON(655231.9823))
+        XCTAssertEqual(json[2][2], Bundle(NSNull()))
+        XCTAssertEqual(json[2,2], Bundle(NSNull()))
+        XCTAssertEqual(json[2][3], Bundle(655231.9823))
+        XCTAssertEqual(json[2,3], Bundle(655231.9823))
+        XCTAssertEqual(json[[2,3]], Bundle(655231.9823))
     }
     
     func testOutOfBounds() {
-        let json:JSON = JSON ([[NSNumber(value:1),NSNumber(value:2.123456),NSNumber(value:123456789)], ["aa","bbb","cccc"], [true, "766", NSNull(), 655231.9823]] as NSArray)
-        XCTAssertEqual(json[9], JSON.null)
+        let json: Bundle = Bundle([[NSNumber(value:1), NSNumber(value:2.123456), NSNumber(value:123456789)], ["aa", "bbb", "cccc"], [true, "766", NSNull(), 655231.9823]] as NSArray)
+        XCTAssertEqual(json[9], Bundle.null)
         XCTAssertEqual(json[-2].error!.code, ErrorIndexOutOfBounds)
         XCTAssertEqual(json[6].error!.code, ErrorIndexOutOfBounds)
-        XCTAssertEqual(json[9][8], JSON.null)
+        XCTAssertEqual(json[9][8], Bundle.null)
         XCTAssertEqual(json[8][7].error!.code, ErrorIndexOutOfBounds)
         XCTAssertEqual(json[8,7].error!.code, ErrorIndexOutOfBounds)
         XCTAssertEqual(json[999].error!.code, ErrorIndexOutOfBounds)
     }
     
     func testErrorWrongType() {
-        let json = JSON(12345)
-        XCTAssertEqual(json[9], JSON.null)
+        let json = Bundle(12345)
+        XCTAssertEqual(json[9], Bundle.null)
         XCTAssertEqual(json[9].error!.code, ErrorWrongType)
         XCTAssertEqual(json[8][7].error!.code, ErrorWrongType)
-        XCTAssertEqual(json["name"], JSON.null)
+        XCTAssertEqual(json["name"], Bundle.null)
         XCTAssertEqual(json["name"].error!.code, ErrorWrongType)
         XCTAssertEqual(json[0]["name"].error!.code, ErrorWrongType)
         XCTAssertEqual(json["type"]["name"].error!.code, ErrorWrongType)
@@ -204,8 +204,8 @@ class SubscriptTests: XCTestCase {
     }
     
     func testErrorNotExist() {
-        let json:JSON = ["name":"NAME", "age":15]
-        XCTAssertEqual(json["Type"], JSON.null)
+        let json: Bundle = ["name":"NAME", "age":15]
+        XCTAssertEqual(json["Type"], Bundle.null)
         XCTAssertEqual(json["Type"].error!.code, ErrorNotExist)
         XCTAssertEqual(json["Type"][1].error!.code, ErrorNotExist)
         XCTAssertEqual(json["Type", 1].error!.code, ErrorNotExist)
@@ -214,17 +214,17 @@ class SubscriptTests: XCTestCase {
     }
     
     func testMultilevelGetter() {
-        let json:JSON = [[[[["one":1]]]]]
+        let json: Bundle = [[[[["one":1]]]]]
         XCTAssertEqual(json[[0, 0, 0, 0, "one"]].int!, 1)
         XCTAssertEqual(json[0, 0, 0, 0, "one"].int!, 1)
         XCTAssertEqual(json[0][0][0][0]["one"].int!, 1)
     }
     
     func testMultilevelSetter1() {
-        var json:JSON = [[[[["num":1]]]]]
+        var json: Bundle = [[[[["num":1]]]]]
         json[0, 0, 0, 0, "num"] = 2
         XCTAssertEqual(json[[0, 0, 0, 0, "num"]].intValue, 2)
-        json[0, 0, 0, 0, "num"] = JSON.null
+        json[0, 0, 0, 0, "num"] = Bundle.null
         XCTAssertEqual(json[0, 0, 0, 0, "num"].null!, NSNull())
         json[0, 0, 0, 0, "num"] = 100.009
         XCTAssertEqual(json[0][0][0][0]["num"].doubleValue, 100.009)
@@ -240,7 +240,7 @@ class SubscriptTests: XCTestCase {
     }
     
     func testMultilevelSetter2() {
-        var json:JSON = ["user":["id":987654, "info":["name":"jack","email":"jack@gmail.com"], "feeds":[98833,23443,213239,23232]]]
+        var json: Bundle = ["user":["id":987654, "info":["name":"jack", "email":"jack@gmail.com"], "feeds":[98833, 23443, 213239, 23232]]]
         json["user","info","name"] = "jim"
         XCTAssertEqual(json["user","id"], 987654)
         XCTAssertEqual(json["user","info","name"], "jim")

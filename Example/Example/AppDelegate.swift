@@ -36,13 +36,13 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         if let file = Bundle.main.path(forResource: "SwiftyJSONTests", ofType: "json") {
             do {
                 let data = try Data(contentsOf: URL(fileURLWithPath: file))
-                let json = JSON(data: data)
+                let json = Bundle(data: data)
                 viewController.json = json
             } catch {
-                viewController.json = JSON.null
+                viewController.json = Bundle.null
             }
         } else {
-            viewController.json = JSON.null
+            viewController.json = Bundle.null
         }
         
         return true

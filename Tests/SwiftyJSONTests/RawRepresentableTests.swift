@@ -1,6 +1,6 @@
 //  RawRepresentableTests.swift
 //
-//  Copyright (c) 2014 - 2016 Pinglin Tang
+//  Copyright (c) 2014 - 2017 Pinglin Tang
 //
 //  Permission is hereby granted, free of charge, to any person obtaining a copy
 //  of this software and associated documentation files (the "Software"), to deal
@@ -26,7 +26,7 @@ import SwiftyJSON
 class RawRepresentableTests: XCTestCase {
 
     func testNumber() {
-        var json:JSON = JSON(rawValue: 948394394.347384 as NSNumber)!
+        var json: Bundle = Bundle(rawValue: 948394394.347384 as NSNumber)!
         XCTAssertEqual(json.int!, 948394394)
         XCTAssertEqual(json.intValue, 948394394)
         XCTAssertEqual(json.double!, 948394394.347384)
@@ -42,11 +42,11 @@ class RawRepresentableTests: XCTestCase {
     }
     
     func testBool() {
-        var jsonTrue:JSON = JSON(rawValue: true as NSNumber)!
+        var jsonTrue: Bundle = Bundle(rawValue: true as NSNumber)!
         XCTAssertEqual(jsonTrue.bool!, true)
         XCTAssertEqual(jsonTrue.boolValue, true)
         
-        var jsonFalse:JSON = JSON(rawValue: false)!
+        var jsonFalse: Bundle = Bundle(rawValue: false)!
         XCTAssertEqual(jsonFalse.bool!, false)
         XCTAssertEqual(jsonFalse.boolValue, false)
         
@@ -59,7 +59,7 @@ class RawRepresentableTests: XCTestCase {
     
     func testString() {
         let string = "The better way to deal with JSON data in Swift."
-        if let json:JSON = JSON(rawValue: string) {
+        if let json: Bundle = Bundle(rawValue: string) {
             XCTAssertEqual(json.string!, string)
             XCTAssertEqual(json.stringValue, string)
             XCTAssertTrue(json.array == nil)
@@ -72,33 +72,33 @@ class RawRepresentableTests: XCTestCase {
             XCTFail("Should not run into here")
         }
         
-        let object: Any = JSON(rawValue: string)!.rawValue
+        let object: Any = Bundle(rawValue: string)!.rawValue
         XCTAssertEqual(object as? String, string)
     }
     
     func testNil() {
-        if let _ = JSON(rawValue: NSObject()) {
+        if let _ = Bundle(rawValue: NSObject()) {
             XCTFail("Should not run into here")
         }
     }
     
     func testArray() {
         let array = [1,2,"3",4102,"5632", "abocde", "!@# $%^&*()"] as NSArray
-        if let json:JSON = JSON(rawValue: array) {
-            XCTAssertEqual(json, JSON(array))
+        if let json: Bundle = Bundle(rawValue: array) {
+            XCTAssertEqual(json, Bundle(array))
         }
         
-        let object: Any = JSON(rawValue: array)!.rawValue
+        let object: Any = Bundle(rawValue: array)!.rawValue
         XCTAssertTrue(array == object as! NSArray)
     }
     
     func testDictionary() {
         let dictionary = ["1":2,"2":2,"three":3,"list":["aa","bb","dd"]] as NSDictionary
-        if let json:JSON = JSON(rawValue: dictionary) {
-            XCTAssertEqual(json, JSON(dictionary))
+        if let json: Bundle = Bundle(rawValue: dictionary) {
+            XCTAssertEqual(json, Bundle(dictionary))
         }
 
-        let object: Any = JSON(rawValue: dictionary)!.rawValue
+        let object: Any = Bundle(rawValue: dictionary)!.rawValue
         XCTAssertTrue(dictionary == object as! NSDictionary)
     }
 }

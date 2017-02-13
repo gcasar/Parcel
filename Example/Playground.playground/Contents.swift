@@ -46,7 +46,7 @@ let json3 = JSON(data: dataFromString!)
  ### Subscript
  */
 // Example json
-var jsonArray: JSON = [
+var jsonArray: Bundle = [
     "array": [12.34, 56.78],
     "users": [
         [
@@ -68,7 +68,7 @@ var jsonArray: JSON = [
     ]
 ]
 
-var jsonDictionary: JSON = [
+var jsonDictionary: Bundle = [
     "name": "jeffgukang",
     "country": "South Korea"
 ]
