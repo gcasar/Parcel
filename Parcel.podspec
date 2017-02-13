@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|
   s.name        = "Parcel"
-  s.version     = "1.0.0"
+  s.version     = "1.0.1"
   s.summary     = "Parcel makes it easy to deal with generic key-value data types"
   s.homepage    = "https://github.com/gcasar/Parcel"
   s.license     = { :type => "MIT" }
