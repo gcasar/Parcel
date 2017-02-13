@@ -1695,7 +1695,7 @@ extension Parcel {
 }
 
 //MARK: - Parcelable protocol and extensions
-protocol Parcelable{
+public protocol Parcelable{
     /// throws parse exception
     init(fromParcel:Parcel) throws;
 
@@ -1711,16 +1711,16 @@ extension Parcelable{
 }
 
 extension Parcel{
-    func genericObject<T:Parcelable>() -> T?{
+    public func genericObject<T:Parcelable>() -> T?{
         return try? T(fromParcel: self)
     }
 
-    func requiredObject<T:Parcelable>() throws ->T{
+    public func requiredObject<T:Parcelable>() throws ->T{
         return try T(fromParcel: self);
     }
 
     ///Returns an array of objects if self is an array, skips any non-T elements
-    func objectArray<T:Parcelable>() -> [T]?{
+    public func objectArray<T:Parcelable>() -> [T]?{
         if let array = self.array{
             var result:[T] = [];
             for parcel in array{
