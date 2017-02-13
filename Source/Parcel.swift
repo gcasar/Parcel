@@ -34,6 +34,27 @@ public let ErrorWrongType: Int = 901
 public let ErrorNotExist: Int = 500
 public let ErrorInvalidJSON: Int = 490
 
+public class RequiredFieldException: Error{
+    let key:String?;
+
+    init(forKey:String?){
+        self.key = forKey;
+    }
+
+}
+
+public class WrongTypeException: Error{
+    let key:String?;
+    let expected:Type;
+    let actual:Type;
+
+    init(forKey:String?, expectedType:Type, actualType:Type ){
+        self.expected = expectedType;
+        self.actual = actualType;
+        self.key = forKey;
+    }
+}
+
 // MARK: - JSON Type
 
 /**
@@ -48,8 +69,13 @@ public enum Type :Int{
     case bool
     case array
     case dictionary
-    case date
+
     case null
+
+    //non-primitive types
+    case url
+    case date
+
     case unknown
 
 }
@@ -229,7 +255,7 @@ public struct Parcel {
     /// prviate error
     fileprivate var _error: NSError? = nil
     /// Metadata - key of this object in the parent
-    fileprivate var _key: ParcelKey? = nil;
+    fileprivate var _key: String? = nil;
 
     /// Object in JSON
     public var object: Any {
@@ -461,6 +487,7 @@ extension Parcel {
             } else {
                 r._error = self._error ?? NSError(domain: ErrorDomain, code: ErrorWrongType, userInfo: [NSLocalizedDescriptionKey: "Dictionary[\"\(key)\"] failure, It is not an dictionary"])
             }
+            r._key = key;
             return r
         }
         set {
@@ -821,6 +848,24 @@ extension Parcel {
             }
         }
     }
+
+    public func requiredArray() throws -> [Parcel] {
+        if self.type == .array{
+            return self.rawArray.map{ Parcel($0) }
+        }else if let e:NSError = self._error{
+            switch(e.code){
+            case ErrorWrongType:
+                throw WrongTypeException(forKey: _key, expectedType: .array, actualType: self.type);
+                break;
+            default://case ErrorNotExist:
+                throw RequiredFieldException(forKey: _key);
+                break;
+            }
+
+        }else{
+            throw WrongTypeException(forKey: _key, expectedType: .array, actualType: self.type );
+        }
+    }
 }
 
 // MARK: - Dictionary
@@ -862,6 +907,24 @@ extension Parcel {
             } else {
                 self.object = NSNull()
             }
+        }
+    }
+
+    public func requiredDictionary() throws -> [String : Parcel] {
+        if let dict = self.dictionary{
+            return dict;
+        }else if let e:NSError = self._error{
+            switch(e.code){
+            case ErrorWrongType:
+                throw WrongTypeException(forKey: _key, expectedType: .dictionary, actualType: self.type);
+                break;
+            default://case ErrorNotExist:
+                throw RequiredFieldException(forKey: _key);
+                break;
+            }
+
+        }else{
+            throw WrongTypeException(forKey: _key, expectedType: .dictionary, actualType: self.type );
         }
     }
 }
@@ -909,6 +972,24 @@ extension Parcel { // : Swift.Bool
             self.object = newValue
         }
     }
+
+    public func requiredBool() throws -> Bool {
+        if let b = self.bool{
+            return b;
+        }else if let e:NSError = self._error{
+            switch(e.code){
+            case ErrorWrongType:
+                throw WrongTypeException(forKey: _key, expectedType: .bool, actualType: self.type);
+                break;
+            default://case ErrorNotExist:
+                throw RequiredFieldException(forKey: _key);
+                break;
+            }
+
+        }else{
+            throw WrongTypeException(forKey: _key, expectedType: .bool, actualType: self.type );
+        }
+    }
 }
 
 // MARK: - String
@@ -950,6 +1031,24 @@ extension Parcel {
         }
         set {
             self.object = NSString(string:newValue)
+        }
+    }
+
+    public func requiredString() throws -> String {
+        if let s = self.string{
+            return s;
+        }else if let e:NSError = self._error{
+            switch(e.code){
+            case ErrorNotExist:
+                throw RequiredFieldException(forKey: _key);
+                break;
+            case ErrorWrongType:
+                throw WrongTypeException(forKey: _key, expectedType: .string, actualType: self.type);
+                break;
+            }
+
+        }else{
+            throw WrongTypeException(forKey: _key, expectedType: .string, actualType: self.type );
         }
     }
 }
@@ -996,6 +1095,24 @@ extension Parcel {
             self.object = newValue
         }
     }
+
+    public func requiredNumber() throws -> NSNumber {
+        if let s = self.number{
+            return s;
+        }else if let e:NSError = self._error{
+            switch(e.code){
+            case ErrorWrongType:
+                throw WrongTypeException(forKey: _key, expectedType: .number, actualType: self.type);
+                break;
+            default://case ErrorNotExist:
+                throw RequiredFieldException(forKey: _key);
+                break;
+            }
+
+        }else{
+            throw WrongTypeException(forKey: _key, expectedType: .number, actualType: self.type );
+        }
+    }
 }
 
 //MARK: - Null
@@ -1021,6 +1138,25 @@ extension Parcel {
             return false
         }
         return true
+    }
+
+    ///Actuall "null" value, not a lack of value
+    public func requiredNull() throws {
+        guard self.type == .null && self._error == nil else{
+            return;
+        }
+
+        if let e:NSError = self._error{
+            switch(e.code){
+            case ErrorWrongType:
+                throw WrongTypeException(forKey: _key, expectedType: .null, actualType: self.type);
+            default://case ErrorNotExist:
+                throw RequiredFieldException(forKey: _key);
+            }
+
+        }else{
+            throw WrongTypeException(forKey: _key, expectedType: .null, actualType: self.type );
+        }
     }
 }
 
@@ -1049,6 +1185,23 @@ extension Parcel {
             self.object = newValue?.absoluteString ?? NSNull()
         }
     }
+
+    public func requiredURL() throws -> URL {
+        if let s = self.url{
+            return s;
+        }else if let e:NSError = self._error{
+            switch(e.code){
+            case ErrorWrongType:
+                throw WrongTypeException(forKey: _key, expectedType: .url, actualType: self.type);
+            default://case ErrorNotExist:
+                throw RequiredFieldException(forKey: _key);
+            }
+
+        }else{
+            throw WrongTypeException(forKey: _key, expectedType: .url, actualType: self.type );
+        }
+    }
+
 }
 
 // MARK: - Int, Double, Float, Int8, Int16, Int32, Int64
@@ -1532,6 +1685,22 @@ extension Parcel {
             } else {
                 self.object =  NSNull()
             }
+        }
+    }
+
+    public func requiredDate() throws -> Date {
+        if let s = self.date{
+            return s;
+        }else if let e:NSError = self._error{
+            switch(e.code){
+            case ErrorWrongType:
+                throw WrongTypeException(forKey: _key, expectedType: .date, actualType: self.type);
+            default://case ErrorNotExist:
+                throw RequiredFieldException(forKey: _key);
+            }
+
+        }else{
+            throw WrongTypeException(forKey: _key, expectedType: .date, actualType: self.type );
         }
     }
 }
