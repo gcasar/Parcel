@@ -1642,6 +1642,7 @@ extension Parcel {
 
     private static func parseDate(fromISO8601 dateStr: String)->Date?{
         let dateFmt = DateFormatter()
+        dateFmt.locale = Locale(identifier: "en_US_POSIX");
         dateFmt.timeZone = TimeZone(abbreviation: "UTC")!;
         dateFmt.dateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"
         var result = dateFmt.date(from: dateStr);
