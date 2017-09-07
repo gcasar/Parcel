@@ -1053,6 +1053,14 @@ extension Parcel {
             switch self.type {
             case .number:
                 return self.rawNumber
+            case .string:
+                if let double = Double(rawString){
+                    return NSNumber(floatLiteral: double)
+                }else if let int = Int64(rawString){
+                    return NSNumber(value: int)
+                }else{
+                    return nil;
+                }
             case .bool:
                 return NSNumber(value: self.rawBool ? 1 : 0)
             default:
