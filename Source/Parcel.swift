@@ -935,6 +935,23 @@ extension Parcel { // : Swift.Bool
             switch self.type {
             case .bool:
                 return self.rawBool
+            case .number:
+                return self.rawNumber.boolValue
+            case .string:
+                let trueValue = ["true", "y", "t"].contains() { (truthyString) in
+                    return self.rawString.caseInsensitiveCompare(truthyString) == .orderedSame
+                };
+                if !trueValue {
+                    let falseValue = ["false", "n", "f"].contains() { (truthyString) in
+                        return self.rawString.caseInsensitiveCompare(truthyString) == .orderedSame
+                    };
+                    if falseValue {
+                        return false;
+                    }
+                }else{
+                    return true;
+                }
+                return nil;
             default:
                 return nil
             }
